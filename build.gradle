@@ -1,32 +1,76 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.2'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
+	id 'org.springframework.boot' version '2.4.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
 }
 
-group = 'com.bulbul'
+group = 'org.philmaster'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+sourceCompatibility = '8'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
+}
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   developmentOnly("org.springframework.boot:spring-boot-devtools")
+  
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+//	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+	runtimeOnly 'com.h2database:h2'
+//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
+	
+	compile group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '2.5.2'
+	compile group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.0.Final'
+	
+	compile group: 'org.webjars', name: 'webjars-locator', version: '0.40'
+	compile group: 'org.webjars', name: 'AdminLTE', version: '3.0.5'
+	compile group: 'org.webjars', name: 'ionicons', version: '2.0.1'
+	
+	
 }
 
 test {
-    useJUnitPlatform()
+	//useJUnitPlatform()
+}
+
+task reload(type: Copy) {
+    from 'src/main/resources'
+    into 'build/resources/main'
+    include 'static/**'
+    include 'templates/**'
+    dependsOn('reloadModule')
+}
+
+task reloadModule(type: Copy){
+  from '../module/src/main/resources'
+  into 'build/resources/main'
+  include 'static/**'
+  include 'templates/**'
+}
+
+task restart {
+  dependsOn(classes)
+  dependsOn('restartModule')
+}
+
+task restartModule(type: Copy){
+  from '../module/build/classes/'
+  into 'build/classes'
+  
+  dependsOn(':module:classes')
 }
