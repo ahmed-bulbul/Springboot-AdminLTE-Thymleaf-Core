@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ThymleafCoreApplication {
 
 	public static void main(String[] args) {
+		// fresh start
 		SpringApplication.run(ThymleafCoreApplication.class, args);
 	}
 
